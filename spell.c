@@ -103,25 +103,25 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[])
 }
 
 
-int main ()
-{
+//int main ()
+//{
 
-     char dictonary[80] = "wordlist.txt" ;
-     char word[46] = "becauser" ;
-     char *misspelled ;
-     FILE *fp ;
+ //    char dictonary[80] = "wordlist.txt" ;
+  //   char word[46] = "becauser" ;
+   //  char *misspelled ;
+    // FILE *fp ;
 //     int* head ;
-     node* new_node ;
-     int i ;
-     hashmap_t hashtable[HASH_SIZE] ;
+//     node* new_node ;
+ //    int i ;
+  //   hashmap_t hashtable[HASH_SIZE] ;
 
-     if (( fp = fopen("sentence.txt", "r")) == NULL )
-     {
-          printf ( "Error! could not open file \n" ) ;
-     }
+   //  if (( fp = fopen("sentence.txt", "r")) == NULL )
+    // {
+     //     printf ( "Error! could not open file \n" ) ;
+  //   }
 
-     load_dictionary( dictonary, hashtable ) ;
-     check_words(fp, hashtable, &misspelled) ;
+   //  load_dictionary( dictonary, hashtable ) ;
+ //    check_words(fp, hashtable, &misspelled) ;
 
 //    printf ( "Here %s\n", hashtable[425]->word ) ;
 //     for ( i=1; i<10; i++ )
@@ -161,4 +161,4 @@ int main ()
       //         printf ("%s %i \n", new_node->word, i) ;
        //   }
    //  }
-}
+//}
