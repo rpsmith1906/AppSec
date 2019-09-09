@@ -5,6 +5,7 @@
 #include <ctype.h>
 #include "dictionary.h"
 
+
 int hash_function(const char* word);
 int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[]);
 bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[]);
@@ -141,7 +142,6 @@ int main ()
 //     printf ("%s\n", new_node->word ) ;
 //     new_node->next = head ;
 
-//     node* cursor = head ;
 
 //     while ( cursor != NULL )
 //     {
