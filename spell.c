@@ -92,7 +92,7 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[])
                if ( check_word(word, hashtable) == false ) 
                { 
                     misspelled[mswords] = (char* )malloc(sizeof(char)*(LENGTH + 1)) ;
-                    strcpy ( misspelled[mswords++], word ) ;
+                    strcpy ( misspelled[mswords++], lword ) ;
                }
           }
      }
