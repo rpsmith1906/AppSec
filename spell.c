@@ -47,12 +47,13 @@ bool check_word(const char* word, hashmap_t hashtable[])
 int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[])
 {
      char word[LENGTH + 1] ;
-     char lword[LENGTH + 1] ;
-     char c ;
-     int i ;
-     int mswords=0 ;
-     int punct=0 ;
+     char lword[LENGTH + 1] = "" ;
+     char c = '\0' ;
+     int i = 0, j = 0 ;
+     int mswords = 0 ;
+     int punct = 0 ;
 
+     for ( i=0 ; i<LENGTH ; i++ ) { word[i] = '\0' ; }
      while ( ! feof( fp ))
      {
           c = fgetc(fp) ;
@@ -75,29 +76,23 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[])
           else 
           { 
                word[LENGTH] = '\0' ;
-               strcpy ( lword, word ) ;
                misspelled[mswords] = (char* )malloc(sizeof(char)*(LENGTH + 1)) ;
-               strcpy ( misspelled[mswords++], lword ) ;
-               word[0] = '\0' ; 
+               strcpy ( misspelled[mswords++], word ) ;
+               word[0] = '\0' ;
           }
-
-          for ( i=0, punct=0 ; word[i] != '\0' ; i++ )
-          {
-               if ( ispunct( word[i] ) ) { punct++ ; }
-          }
-          if (( ispunct( word[i-1] )) && ( punct == 1 )) { word[i-1] = '\0' ; }
 
           strcpy ( lword, word ) ;
-          if ( ispunct( word[i-1] )) { word[i-1] = '\0' ; }
-//          printf ("Here %i %i |%c %c| %s\n", i, punct, word[i-1], word[i-2], word) ;
- //         printf ("Here2 %i %i %s\n", i, punct, word) ;
+          if ( i > 1 ) 
+          { 
+               if ( ispunct( word[i-1] ) ) { word[i-1] = '\0' ; }
+          }
 
           if ( strlen(word) != 0 ) 
           { 
                if ( check_word(word, hashtable) == false ) 
                { 
                     misspelled[mswords] = (char* )malloc(sizeof(char)*(LENGTH + 1)) ;
-                    strcpy ( misspelled[mswords++], lword ) ;
+                    strcpy ( misspelled[mswords++], word ) ;
                }
           }
      }
