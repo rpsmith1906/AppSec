@@ -26,7 +26,7 @@ int main (int argc, char *argv[] )
           printf ( "Error! could not open file \n" ) ;
      }
 
-     load_dictionary( argv[1], hashtable ) ;
+     load_dictionary( argv[2], hashtable ) ;
      mswords=check_words(fp, hashtable, misspelled) ;
 
      if ( mswords > 0 ) 
