@@ -60,7 +60,9 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[])
           i = 0 ;
           strcpy(word, "") ;
 
-          while ( ! isspace(c) )
+          if ( ispunct(c) ) { continue ; }
+
+          while (( ! isspace(c) ) && ( c != '-' ))
           {
                if ( feof(fp) ) { break ; }
                if ( i <= LENGTH)
@@ -81,10 +83,15 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[])
                word[0] = '\0' ;
           }
 
-          if ( i > 1 ) 
-          { 
-               if ( ispunct( word[i-1] ) ) { word[i-1] = '\0' ; }
+          while (( i > 1 ) && ( ispunct( word[i-1] )))
+          {
+               word[i-1] = '\0' ;
+               i-- ;
           }
+          //if ( i > 1 ) 
+          //{ 
+          //     if ( ispunct( word[i-1] ) ) { word[i-1] = '\0' ; }
+          //}
 
           if ( strlen(word) != 0 ) 
           { 
