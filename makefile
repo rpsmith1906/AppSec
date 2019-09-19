@@ -3,5 +3,5 @@ spell: spell.c
 
 testfiles := $(shell ls testing/*)
 test:
-	@echo $(shell ls testing/*)
-	$(foreach input, $(testfiles), ./spell $(input) ./wordlist.txt;)
+	@echo $(shell ls testing/input/*)
+	$(foreach input, $(testfiles), ./spell $(input) ./testing/wordlist.txt;)
