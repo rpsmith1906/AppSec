@@ -4,4 +4,4 @@ spell: spell.c
 testfiles := $(shell ls testing/*)
 test:
 	@echo $(shell ls testing/input/*)
-	$(foreach input, $(testfiles), ./spell $(input) ./testing/wordlist.txt;)
+	$(foreach input, $(testfiles), "./spell $(input) ./testing/wordlist.txt";)
