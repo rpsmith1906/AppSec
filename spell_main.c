@@ -23,13 +23,17 @@ int main (int argc, char *argv[] )
           return (1) ;
      }
 
-     if (( fp = fopen(argv[1], "r")) == NULL )
-     {
-          printf ( "Error! could not open file \n" ) ;
-          return (1) ;
+     if ( strcmp(argv[1], "-") == 0 ) { fp = stdin ; }
+     else
+     {   
+          if (( fp = fopen(argv[1], "r")) == NULL )
+          {
+               printf ( "Error! could not open file \n" ) ;
+               return (1) ;
+          }
      }
 
-     if ( load_dictionary( argv[2], hashtable ) == true )
+     if ( load_dictionary(argv[2], hashtable ) == true )
      {
           mswords=check_words(fp, hashtable, misspelled) ;
      }
@@ -51,13 +55,27 @@ int main (int argc, char *argv[] )
 
      if ( mswords > 0 ) 
      { 
-          if ( mswords == 1 ) { printf("There was %i misspelled words found.\n\n", mswords ) ; }
-          else { printf("There were %i misspelled words found.\n\n", mswords ) ; }
+          if ( strcmp(argv[1], "-") != 0 )
+          {
+               if ( mswords == 1 ) { printf("There was %i misspelled words found.\n\n", mswords ) ; }
+               else { printf("There were %i misspelled words found.\n\n", mswords ) ; }
+          }
 
           for ( i=0; i<mswords; i++ )
           {
-               printf ("%s\n", misspelled[i] );
-               free ( misspelled[i] ) ;
+               if ( strcmp(argv[1], "-") != 0 )
+               {
+                    printf ("%s\n", misspelled[i] );
+               }
+               else
+               {
+                    if ( i > 0 ) { printf(" ") ; }
+                    printf ("%s", misspelled[i] ) ;
+                    if ( i < ( mswords -1 ) ) { printf(",") ; }
+                    free ( misspelled[i] ) ;
+               }
           }
+          printf ("\n") ;
      }
+
 }
