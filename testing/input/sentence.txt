@@ -24,3 +24,5 @@ worde-list
 +56.7
 -67.9
 help?
+battle-field
+shui-wreck

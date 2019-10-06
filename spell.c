@@ -13,76 +13,73 @@ bool check_word(const char* word, hashmap_t hashtable[]);
 
 bool isnumeric (const char* word)
 {
-     int i ;
+     int i, j, k ;
      char c='\0' ;
      char number = 'u' ;
 
-     i=0 ;
-     while ( word[i] != '\0' )
+     i = 0 ;
+     j = strlen(word)-1 ;
+
+     if ( i==j && ! isdigit(word[i])) { return false ; }
+
+     if ( word[i] != '$' && word[i] != '.' && word[i] != '+' && word[i] != '-' && ! isdigit(word[i])) 
      {
-          c = word[i] ;
-          if ( i==0 )
-          {
-               if  (( c != '+' ) && (c != '-'))
-               {
-                    if ( isdigit (c) ) { number = 'n' ; }
-                    else { number = 'a' ; }
-               }
-          }
-          else
-          {
-               if ( isdigit (c) ) 
-               {
-                    if (  number == 'u' ) { number = 'n' ; }
-               }
-               else
-               {
-                    switch ( number )
-                    {
-                         case 'u' :
-                              number = 'a' ;
-                              break ;
-
-                         case 'n' :
-                              switch ( c )
-                              {
-                                   case '.' :
-                                        number = 'f' ;
-                                        break ;
-
-                                   case 'E' :
-                                        number = 'e' ;
-                                        break ;
-
-                                   default :
-                                        number = 'a' ;
-                              }
-                              break ;
-
-                         case 'f' :
-                              switch ( c )
-                              {
-                                   case 'E' :
-                                        number - 'e' ;
-                                        break ;
-
-                                   default :
-                                        number = 'a' ;
-                              }
-                     }
-               }
-          }
-
-          if ( number == 'a' ) { break ; }
-          else { i++ ; }
-
+          return false ;
      }
-   
-     i = strlen ( word ) ;
-     if ( ! isdigit( word[i-1] )) { number = 'a' ; }
+     else
+     {
+          if ( word[i] == '$' || word[i] == '.' || word[i] == '+' || word[i] == '-' )
+          {
+               if ( word[i] == '.' ) { number = 'd' ; }
+               if ( word[i] == '$' ) { number = 'm' ; }
 
-     if ( number == 'a' ) { return ( false ) ; }
-     else { return ( true ) ; }
+               if ( i < j ) 
+               { 
+                    if ( isdigit(word[i+1]) ) { i++ ; }
+                    else { return false ; }
+               }
+               else { return false ; }
+          }
+     }
+
+     for(i; i <= j; i++)
+     {
+          if (( number == 'd' ) && ( word[i] == '.' )) { return false ; }
+          if (( number == 'e' ) && ( word[i] == '.' || tolower(word [i]) == 'e' )) { return false ; }
+          if ( number == 'm' )
+          {
+               if ( tolower( word[i] ) == 'e' ) { return false ; }
+               if ( word[i] == '.' ) 
+               { 
+                    if ( j < ( i+2 )) { return false ; }
+               }
+          }
+
+          if ( word[i] == ',' )
+          {
+               if ( j >= ( i+4 ) )
+               {
+                    if ( word[i+4] != '.' && tolower(word[i+4]) != 'e' && word[i+4] != ',' ) { return false ; }
+               }
+
+               for (k=i+1; k<=(i+3); k++)
+               {
+                    if ( k>j ) { return false ; }
+                    if ( ! isdigit( word[k] )) { return false ; }
+               }
+          }
+          
+          if ( ! isdigit( word[i] ) && tolower(word[i]) != 'e' && word[i] != '.' && word[i] != ',' ) { return false ; }
+
+          if ( word[i] == '.'  || tolower(word[i]) == 'e' )
+          {
+               if (( word[i] == '.' ) && ( number == 'u' )) { number = 'd' ; }
+               if ( tolower(word[i]) == 'e' ) { number = 'e' ; }
+               if ( i == j ) { return false ; }
+               if ( ! isdigit( word[i+1] ) ) { return false ; }
+          }
+     }
+     return true ;          
 }
 
 bool check_word(const char* word, hashmap_t hashtable[])
@@ -129,6 +126,7 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[])
      int i = 0, j = 0 ;
      int mswords = 0 ;
      int punct = 0 ;
+     bool mw ;
 
      for ( i=0 ; i<LENGTH ; i++ ) { word[i] = '\0' ; }
      while ( ! feof( fp ))
@@ -138,9 +136,9 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[])
           i = 0 ;
           strcpy(word, "") ;
 
-          if ( ispunct(c) ) { continue ; }
+          if ( isspace(c) ) { continue ; }
 
-          while (( ! isspace(c) ) && ( c != '-' ))
+          while ( ! isspace(c) ) 
           {
                if ( feof(fp) ) { break ; }
                if ( i <= LENGTH)
@@ -164,7 +162,7 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[])
                strcpy ( misspelled[mswords++], word ) ;
                word[0] = '\0' ;
           }
-
+         
           while (( i > 1 ) && ( ispunct( word[i-1] )))
           {
                word[i-1] = '\0' ;
@@ -175,12 +173,21 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[])
           { 
                if ( check_word(word, hashtable) == false ) 
                { 
+                    mw = false ;
                     j = strchr(word, '-') ;
 
                     if ( j != NULL ) 
                     {
-                         j = strtok(word, "-" ) ;
-                         if ( check_word(word, hashtable) == false )
+                         strcpy(lword, word) ;
+                         j = strtok(lword, "-") ;
+
+                         while ( j != NULL )
+                         {
+                              if ( check_word(j, hashtable) == false ) { mw = true ; }
+                              j = strtok(NULL, "-") ;
+                         }
+
+                         if ( mw == true )
                          {
                               misspelled[mswords] = (char* )malloc(sizeof(char)*(LENGTH + 1)) ;
                               if ( misspelled[mswords] == NULL ) 
@@ -189,22 +196,6 @@ int check_words(FILE* fp, hashmap_t hashtable[], char* misspelled[])
                                    return (-1) ;
                               }
                               strcpy ( misspelled[mswords++], word ) ;
-
-                              j = strtok(NULL, "-") ;
-                              while ( j != NULL )
-                              {
-                                   if ( check_word(word, hashtable) == false )
-                                   {
-                                        if ( misspelled[mswords] == NULL ) 
-                                        {
-                                             printf("System exceeded available memory..\n") ;
-                                             return (-1) ;
-                                        }
-                                        misspelled[mswords] = (char* )malloc(sizeof(char)*(LENGTH + 1)) ;
-                                        strcpy ( misspelled[mswords++], word ) ;
-                                   }
-                              }
-
                          }
                     } 
                     else
